@@ -96,7 +96,7 @@ public class UserDAO {
 		}
 	}
 	
-	// 아이디 체크
+	// 로그인 체크
 	public int loginCheck(String id, String password) {
 		
 		Connection con = null;
@@ -131,6 +131,48 @@ public class UserDAO {
 					returnVal = 0;	// 비번이 틀린경우
 				}
 				
+			}else { // 입력된 아이디에 해당하는 비번이 없는 경우
+				returnVal = -1;
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				if(pstmt != null)pstmt.close();
+				if(con != null)con.close();
+			}catch(SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return returnVal;
+	}
+	
+	// 아이디 중복 체크
+	public int idCheck(String id) {
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs;
+		
+		int returnVal = -1;
+		
+		try {
+			// 커넥션을 가져온다.
+			con = dataFactory.getConnection();
+			
+			String query = "select id from User where id=?";
+			
+			pstmt = con.prepareStatement(query);
+			
+			pstmt.setString(1, id);
+			
+			// pstmt.executeQuery()는
+			// select 할때 사용
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) { // 입력된 아이디에 해당하는 비번이 있는 경우
+				returnVal = 1;
 			}else { // 입력된 아이디에 해당하는 비번이 없는 경우
 				returnVal = -1;
 			}

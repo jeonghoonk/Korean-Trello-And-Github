@@ -11,9 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.service.Command;
 import com.service.CommandForward;
+import com.service.IdCheckCommand;
+import com.service.JoinCommand;
 import com.service.LoginCommand;
 
-@WebServlet({"/main.do","/loginCommand.do"})
+@WebServlet({"/main.do","/loginCommand.do","/join.do","/joinCommand.do","/idChkCommand.do"})
 public class LoginController extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -41,9 +43,25 @@ public class LoginController extends HttpServlet {
 	    	forward.setRedirect(false);
 	    	forward.setNextPath("loginForm.jsp");
 	    }
+	    // 회원가입 화면
+	    else if(com.equals("/join.do")) {
+	    	forward = new CommandForward();
+	    	forward.setRedirect(false);
+	    	forward.setNextPath("joinForm.jsp");
+	    }
 	    // 로그인 처리
 	    else if(com.equals("/loginCommand.do")) {
 	    	command = new LoginCommand();
+	    	forward = command.execute(request, response);
+	    }
+	    // 회원가입 처리
+	    else if(com.equals("/joinCommand.do")) {
+	    	command = new JoinCommand();
+	    	forward = command.execute(request, response);
+	    }
+	    // 아이디 중복 확인 처리
+	    else if(com.equals("/idChkCommand.do")) {
+	    	command = new IdCheckCommand();
 	    	forward = command.execute(request, response);
 	    }
 	    
